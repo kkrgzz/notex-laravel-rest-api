@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use GuzzleHttp\Psr7\Request as Psr7Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -43,6 +45,19 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $user->createToken($request->device_name ?? 'default')->plainTextToken,
+            'user' => $user,
         ]);
+    }
+
+    public function logout()
+    {
+        Auth::user()->tokens()->delete();
+        
+        return response()->json(['message' => 'Logged out successfully']);
+    }
+
+    public function me(Request $request)
+    {
+        return response()->json($request->user());
     }
 }
