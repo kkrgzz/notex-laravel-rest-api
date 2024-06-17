@@ -22,21 +22,22 @@ class NoteController extends Controller
         $note = new Note($request->all());
         $note->user_id = Auth::id();
         $note->save();
-
+    
         if ($request->has('categories')) {
             $note->categories()->sync($request->categories);
         }
-
+    
         if ($request->hasFile('images')) {
             $this->syncImages($note, $request->file('images'));
         }
-
+    
         if ($request->has('urls')) {
             $this->syncUrls($note, $request->urls);
         }
-
+    
         return response()->json($note->load(['categories', 'images', 'urls']), 201);
     }
+    
 
 
     public function show(Note $note)
